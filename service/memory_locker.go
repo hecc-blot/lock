@@ -7,6 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/hecc-blot/core/util"
 	lock "github.com/hecc-blot/lock/contract"
 )
 
@@ -34,7 +35,7 @@ func (m *memoryLocker) TryLock(_ context.Context, key string, ttl time.Duration)
 	if ttl <= 0 {
 		return nil, errors.New("lock: ttl 必须大于 0")
 	}
-	token := newToken()
+	token := util.RandomHex(16)
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	if _, ok := m.held[key]; ok {

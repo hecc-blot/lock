@@ -2,14 +2,12 @@ package service
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/hex"
 	"errors"
-	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
 
+	"github.com/hecc-blot/core/util"
 	lock "github.com/hecc-blot/lock/contract"
 )
 
@@ -75,7 +73,8 @@ func (l *redisLocker) TryLock(ctx context.Context, key string, ttl time.Duration
 	if ttl <= 0 {
 		return nil, errors.New("lock: ttl 必须大于 0")
 	}
-	token := newToken()
+	// 唯一持有者 token：crypto/rand 生成，跨进程不可预测，防止伪造解锁。
+	token := util.RandomHex(16)
 	ok, err := l.atomic.SetNX(ctx, key, token, ttl)
 	if err != nil {
 		return nil, err
@@ -193,15 +192,4 @@ func retryLock(ctx context.Context, retryInterval, wait time.Duration, try func(
 		case <-time.After(retryInterval):
 		}
 	}
-}
-
-// newToken 生成唯一持有者 token。用 crypto/rand 保证跨进程不可预测，
-// 防止其他进程伪造 token 解锁。
-func newToken() string {
-	b := make([]byte, 16)
-	if _, err := rand.Read(b); err != nil {
-		// crypto/rand 几乎不会失败，兜底用时间戳
-		return fmt.Sprintf("%d", time.Now().UnixNano())
-	}
-	return hex.EncodeToString(b)
 }

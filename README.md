@@ -66,11 +66,11 @@ type ILock interface {
 	Renew(ctx context.Context) error
 }
 
-// 语义错误，用 errors.Is 判定
+// 语义错误，用 errors.Is 判定；各自携带 core 段错误码（交给 errorSvc.From 即得对外码）
 var (
-	ErrLocked  = errors.New("lock: 已被其他持有者占用")
-	ErrTimeout = errors.New("lock: 等待超时")
-	ErrNotHeld = errors.New("lock: 锁未被当前持有者持有")
+	ErrLocked  = errorcode.New(errorcode.CodeConflict, "lock: already held by another owner")
+	ErrTimeout = errorcode.New(errorcode.CodeTimeout, "lock: acquire timeout")
+	ErrNotHeld = errorcode.New(errorcode.CodeIllegalState, "lock: not held by current owner")
 )
 ```
 

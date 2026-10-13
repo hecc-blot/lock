@@ -3,7 +3,7 @@ module github.com/hecc-blot/lock
 go 1.26.1
 
 require (
-	github.com/hecc-blot/core v0.1.1
+	github.com/hecc-blot/core v0.4.0
 	github.com/stretchr/testify v1.12.1
 )
 

@@ -1,5 +1,5 @@
-github.com/hecc-blot/core v0.1.1 h1:hIjc19+MSfq3P0pRxiFC+MhrnzP/hvRTKUNs0elchRA=
-github.com/hecc-blot/core v0.1.1/go.mod h1:6UgZXIbD0ysvJmWASu8ZstdKVVrnXT9Ozrx1+HNR7h0=
+github.com/hecc-blot/core v0.4.0 h1:uEymb5QOvegt8rX9jqhVHSlclT7IYBLTxWq0Bp8xt/s=
+github.com/hecc-blot/core v0.4.0/go.mod h1:Xsk1/XczfArgWfA19rSw3mm89LZy7pOxVXxmzuCq6v0=
 github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWDWE=
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
 go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=

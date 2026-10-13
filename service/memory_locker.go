@@ -33,7 +33,7 @@ func NewMemoryLocker(opts ...Option) lock.ILocker {
 
 func (m *memoryLocker) TryLock(_ context.Context, key string, ttl time.Duration) (lock.ILock, error) {
 	if ttl <= 0 {
-		return nil, errors.New("lock: ttl 必须大于 0")
+		return nil, errors.New("lock: ttl must be greater than 0")
 	}
 	token := util.RandomHex(16)
 	m.mu.Lock()

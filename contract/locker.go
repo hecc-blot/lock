@@ -2,18 +2,23 @@ package lock
 
 import (
 	"context"
-	"errors"
 	"time"
+
+	"github.com/hecc-blot/core/enum/errorcode"
 )
 
 // 分布式锁的语义错误，调用方用 errors.Is 判定。
+//
+// 三个 sentinel 各自携带一个 core 段错误码：调用方若把它们交给 framework 的
+// errorSvc.From(err)，对客户端发什么码就由框架按映射表决定，不必自己回忆。
+// 这里只能带 core 段的码 —— 引用 framework 的协议码会造成 leaf → framework 的反向依赖。
 var (
-	// ErrLocked 锁已被其他持有者占用（TryLock 失败）。
-	ErrLocked = errors.New("lock: 已被其他持有者占用")
-	// ErrTimeout 阻塞获取锁在等待时间内未成功。
-	ErrTimeout = errors.New("lock: 等待超时")
-	// ErrNotHeld 锁未被当前持有者持有（重复解锁 / 锁已过期 / 续期失败）。
-	ErrNotHeld = errors.New("lock: 锁未被当前持有者持有")
+	// ErrLocked 锁已被其他持有者占用（TryLock 失败）。对外码：errorcode.CodeConflict。
+	ErrLocked = errorcode.New(errorcode.CodeConflict, "lock: already held by another owner")
+	// ErrTimeout 阻塞获取锁在等待时间内未成功。对外码：errorcode.CodeTimeout。
+	ErrTimeout = errorcode.New(errorcode.CodeTimeout, "lock: acquire timeout")
+	// ErrNotHeld 锁未被当前持有者持有（重复解锁 / 锁已过期 / 续期失败）。对外码：errorcode.CodeIllegalState。
+	ErrNotHeld = errorcode.New(errorcode.CodeIllegalState, "lock: not held by current owner")
 )
 
 // ILock 一把已获取的锁，持有者须在临界区结束后调用 Unlock 释放。

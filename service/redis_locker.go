@@ -60,7 +60,7 @@ type redisLocker struct {
 // （如 cache 模块的 IRedisCache，或自定义 redis 封装），不重复建连。
 func NewRedisLocker(atomic lock.IRedisAtomic, opts ...Option) lock.ILocker {
 	if atomic == nil {
-		panic("lock: redis 原子操作接口不能为空")
+		panic("lock: redis atomic interface must not be nil")
 	}
 	o := options{retryInterval: 50 * time.Millisecond}
 	for _, opt := range opts {
@@ -71,7 +71,7 @@ func NewRedisLocker(atomic lock.IRedisAtomic, opts ...Option) lock.ILocker {
 
 func (l *redisLocker) TryLock(ctx context.Context, key string, ttl time.Duration) (lock.ILock, error) {
 	if ttl <= 0 {
-		return nil, errors.New("lock: ttl 必须大于 0")
+		return nil, errors.New("lock: ttl must be greater than 0")
 	}
 	// 唯一持有者 token：crypto/rand 生成，跨进程不可预测，防止伪造解锁。
 	token := util.RandomHex(16)
